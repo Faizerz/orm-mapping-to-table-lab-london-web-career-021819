@@ -24,7 +24,7 @@ class Student
   def save
     DB[:conn].execute("INSERT INTO students (name, grade) VALUES(?, ?)", self.name, self.grade)
 
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    @id = DB[:conn].execute("SELECT * FROM students ORDER BY id DESC LIMIT 1")
   end
 
   def self.create(name:, grade:)
