@@ -21,10 +21,18 @@ class Student
     DB[:conn].execute("DROP TABLE students")
   end
 
-  def save
-    DB[:conn].execute("INSERT INTO students (name, grade) VALUES(?, ?)", self.name, self.grade)
+  def self.last
+    DB[:conn].execute("SELECT * FROM students ORDER BY id DESC LIMIT 1").flatten
+  end
 
-    @id = DB[:conn].execute("SELECT * FROM students ORDER BY id DESC LIMIT 1")
+  def save
+    if @id == nil
+      DB[:conn].execute("INSERT INTO students (name, grade) VALUES(?, ?)", self.name, self.grade)
+      last_student = Student.last
+      @id, name, grade = last_student
+    else
+      self
+    end
   end
 
   def self.create(name:, grade:)
